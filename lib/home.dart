@@ -58,7 +58,7 @@ class _HomeState extends State<Home> {
           child: ListView(
             padding: EdgeInsets.zero,
             children: [
-              ListTile(),
+              const ListTile(),
               ListTile(
                 leading: const Icon(Icons.home, color: Colors.white),
                 title: const Text(
