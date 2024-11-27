@@ -1,4 +1,4 @@
-package com.example.wheel_of_names
+package com.spin.wheel_of_names
 
 import io.flutter.embedding.android.FlutterActivity
 

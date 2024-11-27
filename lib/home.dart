@@ -59,31 +59,71 @@ class _HomeState extends State<Home> {
             padding: EdgeInsets.zero,
             children: [
               const ListTile(),
-              ListTile(
-                leading: const Icon(Icons.home, color: Colors.white),
-                title: const Text(
-                  'HOME',
-                  style: TextStyle(
-                    fontFamily: 'Rubik',
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20.0),
+                child: Container(
+                  decoration: const BoxDecoration(
                     color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 10.0, top: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          "assets/images/logo.png",
+                          height: 40,
+                          width: 40,
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        const Text(
+                          "WHEEL OF NAMES",
+                          style: TextStyle(
+                              color: AppColors.darkColor,
+                              fontFamily: 'RubikMedium',
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold),
+                        )
+                      ],
+                    ),
                   ),
                 ),
-                onTap: () => _navigateToPage(0),
               ),
-              ListTile(
-                leading: const Icon(Icons.contact_page, color: Colors.white),
-                title: const Text(
-                  'CONTACT',
-                  style: TextStyle(
-                    fontFamily: 'Rubik',
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+              Padding(
+                padding: const EdgeInsets.only(left: 30.0),
+                child: ListTile(
+                  hoverColor: Colors.white,
+                  leading: const Icon(Icons.home, color: Colors.white),
+                  title: const Text(
+                    'HOME',
+                    style: TextStyle(
+                      fontFamily: 'Rubik',
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
+                  onTap: () => _navigateToPage(0),
                 ),
-                onTap: () => _navigateToPage(1),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 30.0),
+                child: ListTile(
+                  hoverColor: Colors.white,
+                  leading: const Icon(Icons.contact_page, color: Colors.white),
+                  title: const Text(
+                    'CONTACT',
+                    style: TextStyle(
+                      fontFamily: 'Rubik',
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  onTap: () => _navigateToPage(1),
+                ),
               ),
             ],
           ),

@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:wheel_of_names/constant.dart';
 
 class Contact extends StatefulWidget {
@@ -11,20 +9,6 @@ class Contact extends StatefulWidget {
 }
 
 class _ContactState extends State<Contact> {
-  // final String linkedInUrl = "https://www.linkedin.com/company/wheel-of-names/";
-  // final String facebookUrl =
-  //     "https://web.facebook.com/profile.php?id=61563204101189&_rdc=1&_rdr#";
-  // void _launchURL(BuildContext context, String url) async {
-  //   final Uri uri = Uri.parse(url);
-  //   if (await canLaunchUrl(uri)) {
-  //     await launchUrl(uri, mode: LaunchMode.externalApplication);
-  //   } else {
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(content: Text('Could not open $url')),
-  //     );
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     final mq = MediaQuery.of(context).size;
@@ -78,7 +62,7 @@ class _ContactState extends State<Contact> {
                   ),
                   child: const Center(
                     child: Text(
-                      "Email: Wheelofnames.me@gmail.com",
+                      "Email: writeagreatquery@gmail.com",
                       style: TextStyle(
                         color: Colors.black,
                         fontFamily: 'RubikMedium',

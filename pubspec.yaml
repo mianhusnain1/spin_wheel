@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.0+1
+version: 1.0.2+3
 
 environment:
   sdk: '>=3.3.4 <4.0.0'
@@ -37,10 +37,8 @@ dependencies:
   cupertino_icons: ^1.0.6
   # flutter_spinning_wheel: ^1.0.0
   flutter_fortune_wheel: ^1.3.2
-  shared_preferences: ^2.0.13
-  sidebarx: ^0.17.1
   lottie: ^3.1.3
-  url_launcher: ^6.3.1
+  audioplayers: ^6.1.0
 
 dev_dependencies:
   flutter_test:
@@ -75,6 +73,7 @@ flutter:
 
     - assets/images/
     - assets/lottie/
+    - assets/sound/
 
   #   - images/a_dot_ham.jpeg
 
@@ -99,7 +98,10 @@ flutter:
     - family: RubikMedium
       fonts:
         - asset: assets/fonts/Rubik-Medium.ttf
-        
+    - family: Spin
+      fonts:
+        - asset: assets/fonts/SpicyRice-Regular.ttf
+      
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf
