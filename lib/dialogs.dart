@@ -32,12 +32,17 @@ class AppDialogs {
                 const SizedBox(
                   height: 3,
                 ),
-                Text(
-                  "The Winner is $winner!",
-                  style: const TextStyle(
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  child: Text(
+                    "The Winner is $winner!",
+                    style: const TextStyle(
                       fontFamily: 'Rubik',
                       fontSize: 15,
-                      color: AppColors.darkColor),
+                      color: AppColors.darkColor,
+                      overflow: TextOverflow.ellipsis, // Show dots for overflow
+                    ),
+                  ),
                 ),
                 const SizedBox(
                   height: 3,

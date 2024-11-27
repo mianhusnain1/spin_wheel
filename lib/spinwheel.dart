@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:math';
-import 'package:audioplayers/audioplayers.dart';
+// import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';
 import 'package:wheel_of_names/constant.dart';
@@ -107,6 +107,9 @@ class _SpinWheelState extends State<SpinWheel> {
     names.remove(winner);
     _nameController.text = names.join('\n');
     _updateEntriesFromController();
+    setState(() {
+      winner = '';
+    });
   }
 
   void resetController() {
@@ -152,6 +155,14 @@ class _SpinWheelState extends State<SpinWheel> {
             ),
             winner != ''
                 ? InkWell(
+                    focusColor: AppColors.darkColor,
+                    splashColor: AppColors.darkColor,
+                    hoverColor: AppColors.darkColor,
+                    highlightColor: AppColors.darkColor,
+                    overlayColor: MaterialStateProperty.all(
+                      AppColors.darkColor,
+                    ),
+                    borderRadius: BorderRadius.circular(20),
                     onTap: excludethewinner,
                     child: Container(
                       decoration: BoxDecoration(
@@ -199,6 +210,7 @@ class _SpinWheelState extends State<SpinWheel> {
                         blurRadius: 20)
                   ]),
                   child: FortuneWheel(
+                    hapticImpact: HapticImpact.heavy,
                     // onFocusItemChanged: (index) {
                     //   // Play click sound each time an item crosses the endpoint
                     //   _playClickSound();
@@ -443,7 +455,7 @@ class _SpinWheelState extends State<SpinWheel> {
                                       _updateEntriesFromController();
                                     },
                                   )
-                                : winner.isNotEmpty
+                                : winners.isNotEmpty
                                     ? Padding(
                                         padding:
                                             const EdgeInsets.only(top: 10.0),
@@ -540,13 +552,16 @@ class _SpinWheelState extends State<SpinWheel> {
                                         ),
                                       )
                                     : const Center(
-                                        child: Text(
-                                          "No winner yet",
-                                          style: TextStyle(
-                                            fontFamily: 'Rubik',
-                                            color: AppColors.darkColor,
-                                            fontSize: 24,
-                                            fontWeight: FontWeight.bold,
+                                        child: Padding(
+                                          padding: EdgeInsets.only(top: 20.0),
+                                          child: Text(
+                                            "No winner yet",
+                                            style: TextStyle(
+                                              fontFamily: 'Rubik',
+                                              color: AppColors.darkColor,
+                                              fontSize: 24,
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -563,7 +578,7 @@ class _SpinWheelState extends State<SpinWheel> {
                     child: InkWell(
                       onTap: () {
                         AppDialogs().delete(
-                            context, "This will delete all your entires", () {
+                            context, "This will delete all your entries.", () {
                           resetController();
                           Navigator.of(context).pop();
                         });
