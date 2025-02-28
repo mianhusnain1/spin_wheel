@@ -165,7 +165,7 @@ class _SpinWheelState extends State<SpinWheel> {
     _selectedController.close();
     _nameController.dispose();
     _audioPlayer.dispose();
-    // _winnerAudioPlayer.dispose();
+    _winnerAudioPlayer.dispose();
     super.dispose();
   }
 
