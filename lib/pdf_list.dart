@@ -1,0 +1,369 @@
+// import 'dart:io';
+// import 'package:flutter/material.dart';
+// import 'package:flutter/services.dart'; // For loading fonts & images
+// import 'package:lottie/lottie.dart';
+// import 'package:pdf/pdf.dart';
+// import 'package:pdf/widgets.dart' as pw;
+// import 'package:wheel_of_names/constant.dart';
+
+// class Winners {
+//   Future<void> generateAndDownloadPDF(
+//       List<String> winners, BuildContext context) async {
+
+//     final pdf = pw.Document();
+
+//     // ✅ Load custom fonts
+//     final rubikRegular =
+//         pw.Font.ttf(await rootBundle.load("assets/fonts/Rubik-Regular.ttf"));
+//     final rubikMedium =
+//         pw.Font.ttf(await rootBundle.load("assets/fonts/Rubik-Medium.ttf"));
+
+//     // ✅ Load logo image (Make sure the logo is in assets folder)
+//     final ByteData imageData = await rootBundle.load("assets/images/logo.png");
+//     final Uint8List imageBytes = imageData.buffer.asUint8List();
+//     final pw.MemoryImage logoImage = pw.MemoryImage(imageBytes);
+
+//     pdf.addPage(
+//       pw.Page(
+//         build: (pw.Context context) {
+//           return pw.Column(
+//             children: [
+//               // ✅ Header with Logo & App Name
+//               pw.Row(
+//                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+//                 children: [
+//                   pw.Container(
+//                     width: 50,
+//                     height: 50,
+//                     child: pw.Image(logoImage), // ✅ Left: Logo
+//                   ),
+//                   pw.Text("Wheel of Names",
+//                       style: pw.TextStyle(
+//                           fontSize: 20,
+//                           font: rubikMedium)), // ✅ Center: App Name
+//                   pw.SizedBox(width: 50), // Empty space for alignment
+//                 ],
+//               ),
+//               pw.SizedBox(height: 10),
+
+//               // ✅ Winners Table with Rounded Border
+//               pw.Container(
+
+//                 child: pw.ClipRRect(
+//                   horizontalRadius: 10,
+//                   verticalRadius: 10, // Clip content to rounded corners
+//                   child: pw.Table(
+//                     border: pw.TableBorder.all(
+//                       color: PdfColors.black, // Border color
+//                       width: 1, // Border width
+//                     ),
+//                     columnWidths: {
+//                       0: const pw.FlexColumnWidth(1),
+//                       1: const pw.FlexColumnWidth(3),
+//                     },
+//                     children: [
+//                       // Table Header
+//                       pw.TableRow(
+//                         decoration: const pw.BoxDecoration(
+//                           color: PdfColors.amber,
+//                           borderRadius: pw.BorderRadius.only(
+//                             topLeft: pw.Radius.circular(
+//                                 10), // Rounded top-left corner
+//                             topRight: pw.Radius.circular(
+//                                 10), // Rounded top-right corner
+//                           ),
+//                         ),
+//                         children: [
+//                           pw.Padding(
+//                             padding: const pw.EdgeInsets.all(8),
+//                             child: pw.Text("Sr",
+//                                 style: pw.TextStyle(font: rubikMedium)),
+//                           ),
+//                           pw.Padding(
+//                             padding: const pw.EdgeInsets.all(8),
+//                             child: pw.Text("Winners",
+//                                 style: pw.TextStyle(font: rubikMedium)),
+//                           ),
+//                         ],
+//                       ),
+
+//                       // Table Data
+//                       ...winners.asMap().entries.map(
+//                             (entry) => pw.TableRow(
+//                               children: [
+//                                 pw.Padding(
+//                                   padding: const pw.EdgeInsets.all(8),
+//                                   child: pw.Text("${entry.key + 1} #",
+//                                       style: pw.TextStyle(font: rubikRegular)),
+//                                 ),
+//                                 pw.Padding(
+//                                   padding: const pw.EdgeInsets.all(8),
+//                                   child: pw.Text(entry.value,
+//                                       style: pw.TextStyle(font: rubikRegular)),
+//                                 ),
+//                               ],
+//                             ),
+//                           ),
+//                     ],
+//                   ),
+//                 ),
+//               ),
+
+//               pw.Spacer(), // Pushes footer to the bottom
+
+//               // ✅ Footer Text
+//               pw.Text(
+//                   "This PDF file is generated by Wheel of Names application",
+//                   style: pw.TextStyle(fontSize: 10, font: rubikRegular)),
+//               pw.Align(
+//                 alignment: pw.Alignment.center,
+//                 child: pw.UrlLink(
+//                   destination: "https://wheelofnames.me/", // Your site URL
+//                   child: pw.Text(
+//                     "www.wheelofnames.me",
+//                     style: pw.TextStyle(
+//                       fontSize: 12,
+//                       font: rubikRegular,
+//                       color: PdfColors.blue,
+//                       decoration: pw.TextDecoration.underline,
+//                     ),
+//                   ),
+//                 ),
+//               ),
+//             ],
+//           );
+//         },
+//       ),
+//     );
+
+//     // ✅ Save PDF in Downloads Folder
+//     try {
+//       Directory downloadsDir = Directory("/storage/emulated/0/Download");
+//       if (!await downloadsDir.exists()) {
+//         await downloadsDir.create(
+//             recursive: true); // Create directory if it doesn't exist
+//       }
+
+// ignore_for_file: use_build_context_synchronously
+
+//       String filePath = "${downloadsDir.path}/Winners_List.pdf";
+//       File file = File(filePath);
+//       await file.writeAsBytes(await pdf.save());
+//       Navigator.of(context).pop();
+//       ScaffoldMessenger.of(context).showSnackBar(
+//         const SnackBar(
+//           backgroundColor: AppColors.darkColor,
+//           content: Text(
+//             "The winner list has been successfully saved in the Downloads folder",
+//             style: TextStyle(color: Colors.white, fontFamily: 'RubikMedium'),
+//           ),
+//           duration: Duration(seconds: 2),
+//         ),
+//       );
+//     } catch (e) {
+//       Navigator.of(context).pop();
+//     }
+//   }
+// }
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; // For loading fonts & images
+import 'package:lottie/lottie.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:wheel_of_names/constant.dart';
+
+class Winners {
+  Future<void> generateAndDownloadPDF(
+      List<String> winners, BuildContext context) async {
+    showDialog(
+        context: context,
+        builder: (context) => Center(
+              child: LottieBuilder.asset(
+                'assets/lottie/loading.json',
+                height: 100,
+                width: 200,
+              ),
+            ));
+    final pdf = pw.Document();
+
+    // ✅ Load custom fonts
+    final rubikRegular =
+        pw.Font.ttf(await rootBundle.load("assets/fonts/Rubik-Regular.ttf"));
+    final rubikMedium =
+        pw.Font.ttf(await rootBundle.load("assets/fonts/Rubik-Medium.ttf"));
+
+    // ✅ Load logo image
+    final ByteData imageData = await rootBundle.load("assets/images/logo.png");
+    final Uint8List imageBytes = imageData.buffer.asUint8List();
+    final pw.MemoryImage logoImage = pw.MemoryImage(imageBytes);
+
+    pdf.addPage(
+      pw.MultiPage(
+        pageFormat: PdfPageFormat.a4, // Standard A4 page size
+        margin: const pw.EdgeInsets.all(20),
+        header: (pw.Context context) => pw.Row(
+          mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+          children: [
+            pw.Container(
+              width: 50,
+              height: 50,
+              child: pw.Image(logoImage), // ✅ Left: Logo
+            ),
+            pw.Text(
+              "Wheel of Names",
+              style: pw.TextStyle(fontSize: 20, font: rubikMedium),
+            ),
+            pw.SizedBox(width: 50), // Empty space for alignment
+          ],
+        ),
+        footer: (context) => pw.Center(
+          child: pw.Column(
+            children: [
+              pw.Text(
+                "This PDF file is generated by Wheel of Names application",
+                style: pw.TextStyle(fontSize: 10, font: rubikRegular),
+              ),
+              pw.UrlLink(
+                destination: "https://wheelofnames.me/",
+                child: pw.Text(
+                  "www.wheelofnames.me",
+                  style: pw.TextStyle(
+                    fontSize: 12,
+                    font: rubikRegular,
+                    color: PdfColors.blue,
+                    decoration: pw.TextDecoration.underline,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        build: (pw.Context context) => [
+          pw.SizedBox(height: 10),
+
+          // ✅ Winners Table with Auto Page Break
+          pw.Padding(
+            padding: const pw.EdgeInsets.symmetric(
+                horizontal: 20), // Adjust padding as needed
+
+            child: pw.Container(
+                decoration: pw.BoxDecoration(
+                  border: pw.Border.all(
+                      color: PdfColors.black, width: 1), // Table border
+                  borderRadius: pw.BorderRadius.circular(8.7), // Border radius
+                ),
+                child: pw.ClipRRect(
+                  horizontalRadius: 10,
+                  verticalRadius: 10, // Clip content to rounded corners
+                  child: pw.Table(
+                    border: pw.TableBorder.all(
+                      color: PdfColors.black,
+                      width: 1,
+                    ),
+                    columnWidths: {
+                      0: const pw.FlexColumnWidth(1),
+                      1: const pw.FlexColumnWidth(3),
+                    },
+                    children: [
+                      // Table Header
+                      pw.TableRow(
+                        decoration: const pw.BoxDecoration(
+                          color: PdfColors.amber,
+                        ),
+                        children: [
+                          pw.Padding(
+                            padding: const pw.EdgeInsets.all(8),
+                            child: pw.Text("Sr #",
+                                style: pw.TextStyle(font: rubikMedium)),
+                          ),
+                          pw.Padding(
+                            padding: const pw.EdgeInsets.all(8),
+                            child: pw.Text("Winners",
+                                style: pw.TextStyle(font: rubikMedium)),
+                          ),
+                        ],
+                      ),
+                      // Table Data (Auto paginated)
+                      ...winners.asMap().entries.map(
+                            (entry) => pw.TableRow(
+                              children: [
+                                pw.Padding(
+                                  padding: const pw.EdgeInsets.all(8),
+                                  child: pw.Text(getOrdinal(entry.key + 1),
+                                      style: pw.TextStyle(font: rubikRegular)),
+                                ),
+                                pw.Padding(
+                                  padding: const pw.EdgeInsets.all(8),
+                                  child: pw.Text(entry.value,
+                                      style: pw.TextStyle(font: rubikRegular)),
+                                ),
+                              ],
+                            ),
+                          ),
+                    ],
+                  ),
+                )),
+          )
+        ],
+      ),
+    );
+
+    // ✅ Save PDF in Downloads Folder
+    try {
+      Directory downloadsDir = Directory("/storage/emulated/0/Download");
+      if (!await downloadsDir.exists()) {
+        await downloadsDir.create(recursive: true);
+      }
+
+      String filePath =
+          await getUniqueFilePath(downloadsDir.path, "Winners_List.pdf");
+      File file = File(filePath);
+      await file.writeAsBytes(await pdf.save());
+      Navigator.of(context).pop();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: AppColors.darkColor,
+          content: Text(
+            "The winner list has been successfully saved in the Downloads folder",
+            style: TextStyle(color: Colors.white, fontFamily: 'RubikMedium'),
+          ),
+          duration: Duration(seconds: 3),
+        ),
+      );
+    } catch (e) {
+      Navigator.of(context).pop();
+      debugPrint("Error saving PDF: $e");
+    }
+  }
+
+  Future<String> getUniqueFilePath(
+      String directoryPath, String fileName) async {
+    int counter = 1;
+    String baseName = fileName.split('.').first; // "Winners_List"
+    String extension = fileName.split('.').last; // "pdf"
+    String newFilePath = "$directoryPath/$fileName";
+
+    while (await File(newFilePath).exists()) {
+      newFilePath = "$directoryPath/${baseName}_$counter.$extension";
+      counter++;
+    }
+    return newFilePath;
+  }
+
+  String getOrdinal(int number) {
+    if (number >= 11 && number <= 13) {
+      return "${number}th"; // Special case for 11, 12, 13
+    }
+    switch (number % 10) {
+      case 1:
+        return "${number}st";
+      case 2:
+        return "${number}nd";
+      case 3:
+        return "${number}rd";
+      default:
+        return "${number}th";
+    }
+  }
+}

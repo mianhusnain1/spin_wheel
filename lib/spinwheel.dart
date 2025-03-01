@@ -1,10 +1,13 @@
 import 'dart:async';
 import 'dart:math';
-// import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:wheel_of_names/constant.dart';
 import 'package:wheel_of_names/dialogs.dart';
+import 'package:wheel_of_names/pdf_list.dart';
 
 class SpinWheel extends StatefulWidget {
   const SpinWheel({super.key});
@@ -15,8 +18,12 @@ class SpinWheel extends StatefulWidget {
 
 class _SpinWheelState extends State<SpinWheel> {
   final ScrollController _scrollController = ScrollController();
+  late AudioPlayer _audioPlayer; // AudioPlayer instance
+  late AudioPlayer _winnerAudioPlayer; // AudioPlayer instance
   bool isEntriesSelected = true;
   bool _isSpinning = false; // Track spinning state
+
+  bool sound = true;
   final TextEditingController _nameController = TextEditingController(
       text: "Mitchell\nRoman\nPreston\nCooley\nMargaret"); // Default names
   List<String> entries = [];
@@ -44,8 +51,31 @@ class _SpinWheelState extends State<SpinWheel> {
 
   @override
   void initState() {
+    _audioPlayer = AudioPlayer();
+    _winnerAudioPlayer = AudioPlayer();
     super.initState();
     _updateEntriesFromController(); // Initialize entries from default text
+    _preloadTickSound();
+    _preloadWinnerSound();
+  }
+
+  void _preloadTickSound() async {
+    await _audioPlayer.setAsset('assets/sound/tick.mp3');
+  }
+
+  void _preloadWinnerSound() async {
+    await _winnerAudioPlayer.setAsset('assets/sound/Short-Cheer.mp3');
+  }
+
+  void _playWinnerSound() {
+    _winnerAudioPlayer.seek(Duration.zero);
+    _winnerAudioPlayer.play();
+  }
+
+  void _playTickSound() {
+    // Restart the sound from the beginning
+    _audioPlayer.seek(Duration.zero);
+    _audioPlayer.play();
   }
 
   void toggleSelection(bool isEntries) {
@@ -93,15 +123,14 @@ class _SpinWheelState extends State<SpinWheel> {
           isEntriesSelected = false; // Switch to Result view
           _isSpinning = false; // Re-enable the button
         });
+
         AppDialogs().showWinnerDialog(context, winner);
+        _playWinnerSound();
         print(winners);
       });
     }
   }
 
-  // void _playClickSound() {
-  //   _audioPlayer.play(AssetSource("sound/click.wav"));
-  // }
   void excludethewinner() {
     List<String> names = _nameController.text.split('\n');
     names.remove(winner);
@@ -135,6 +164,8 @@ class _SpinWheelState extends State<SpinWheel> {
   void dispose() {
     _selectedController.close();
     _nameController.dispose();
+    _audioPlayer.dispose();
+    _winnerAudioPlayer.dispose();
     super.dispose();
   }
 
@@ -153,7 +184,7 @@ class _SpinWheelState extends State<SpinWheel> {
             SizedBox(
               height: mq.height * 0.02,
             ),
-            winner != ''
+            winner != '' && _isSpinning == false
                 ? InkWell(
                     focusColor: AppColors.darkColor,
                     splashColor: AppColors.darkColor,
@@ -183,7 +214,7 @@ class _SpinWheelState extends State<SpinWheel> {
                       ),
                     ),
                   )
-                : SizedBox()
+                : const SizedBox()
           ],
         ),
       ),
@@ -210,11 +241,16 @@ class _SpinWheelState extends State<SpinWheel> {
                         blurRadius: 20)
                   ]),
                   child: FortuneWheel(
+                    physics: CircularPanPhysics(
+                      allowOppositeRotationFlung: false,
+                      duration:
+                          const Duration(seconds: 7), // Slower spin duration
+                      curve: Curves.linear, // Smooth deceleration
+                    ),
+                    onFocusItemChanged: (index) {
+                      _playTickSound(); // Play sound on focus change
+                    },
                     hapticImpact: HapticImpact.heavy,
-                    // onFocusItemChanged: (index) {
-                    //   // Play click sound each time an item crosses the endpoint
-                    //   _playClickSound();
-                    // },
                     indicators: const [
                       FortuneIndicator(child: SizedBox()),
                     ],
@@ -341,6 +377,7 @@ class _SpinWheelState extends State<SpinWheel> {
     return Column(
       children: [
         Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             GestureDetector(
               onTap: () => toggleSelection(true),
@@ -400,6 +437,17 @@ class _SpinWheelState extends State<SpinWheel> {
               ),
             ),
             const Spacer(),
+            const Text(
+              "Sound",
+              style: TextStyle(
+                  color: AppColors.darkColor,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(
+              width: 10,
+            ),
+            toggleButton(),
           ],
         ),
         Stack(
@@ -574,7 +622,7 @@ class _SpinWheelState extends State<SpinWheel> {
             isEntriesSelected
                 ? Positioned(
                     bottom: 12,
-                    right: 12,
+                    right: 20,
                     child: InkWell(
                       onTap: () {
                         AppDialogs().delete(
@@ -591,7 +639,7 @@ class _SpinWheelState extends State<SpinWheel> {
                           child: Icon(
                             Icons.delete,
                             color: AppColors.lightColor,
-                            size: 25,
+                            size: 18,
                           ),
                         ),
                       ),
@@ -599,7 +647,7 @@ class _SpinWheelState extends State<SpinWheel> {
                   )
                 : Positioned(
                     bottom: 12,
-                    right: 12,
+                    right: 20,
                     child: InkWell(
                       onTap: () {
                         AppDialogs().delete(
@@ -616,7 +664,42 @@ class _SpinWheelState extends State<SpinWheel> {
                           child: Icon(
                             Icons.delete,
                             color: AppColors.lightColor,
-                            size: 25,
+                            size: 18,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+            isEntriesSelected
+                ? const SizedBox()
+                : Positioned(
+                    bottom: 53,
+                    right: 20,
+                    child: Opacity(
+                      opacity: winners.isEmpty ? 0.3 : 1,
+                      child: InkWell(
+                        onTap: () {
+                          winners.isEmpty
+                              ? null
+                              : Winners()
+                                  .generateAndDownloadPDF(winners, context);
+                        },
+                        child: Container(
+                          decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: AppColors.darkColor),
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: SvgPicture.asset(
+                              "assets/images/download.svg",
+                              height: 16,
+                              color: Colors.white,
+                            ),
+                            // child: Icon(
+                            //   Icons.download,
+                            //   color: AppColors.lightColor,
+                            //   size: 25,
+                            // ),
                           ),
                         ),
                       ),
@@ -625,6 +708,55 @@ class _SpinWheelState extends State<SpinWheel> {
           ],
         ),
       ],
+    );
+  }
+
+  toggleButton() {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          sound = !sound;
+          if (!sound) {
+            _audioPlayer.setVolume(0);
+            _winnerAudioPlayer.setVolume(0);
+          } else if (sound) {
+            _audioPlayer.setVolume(1);
+            _winnerAudioPlayer.setVolume(1);
+          }
+        });
+      },
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        width: 50,
+        height: 25,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          color: AppColors.lightColor,
+          // Background color
+          border: Border.all(color: AppColors.darkColor, width: 1),
+        ),
+        child: AnimatedAlign(
+          duration: const Duration(milliseconds: 300),
+          alignment: sound ? Alignment.centerRight : Alignment.centerLeft,
+          child: Padding(
+            padding: const EdgeInsets.all(3.0),
+            child: Container(
+                width: 18,
+                height: 18,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                ),
+                child: CircleAvatar(
+                  radius: 7,
+                  backgroundColor: AppColors.darkColor,
+                  child: Text(
+                    sound ? "On" : "Off",
+                    style: const TextStyle(fontSize: 7, color: Colors.white),
+                  ),
+                )),
+          ),
+        ),
+      ),
     );
   }
 }

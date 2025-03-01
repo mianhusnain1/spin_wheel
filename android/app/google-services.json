@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "262040553553",
+    "project_id": "wheel-of-names-bb50c",
+    "storage_bucket": "wheel-of-names-bb50c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:262040553553:android:451b4e024746debfb19070",
+        "android_client_info": {
+          "package_name": "com.spin.wheel_of_names"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBjACqYbIyRW-2n6dTxI6CPjYObKHxc3nc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -80,7 +80,7 @@ class _ContactState extends State<Contact> {
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 15.0, vertical: 7),
                                   child: Text(
-                                    "whatagreatquery@gmail.com",
+                                    "writeagreatquery@gmail.com",
                                     style: TextStyle(
                                         letterSpacing: 0.75,
                                         fontSize: 18,
