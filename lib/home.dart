@@ -114,7 +114,7 @@ class _HomeState extends State<Home> {
                   hoverColor: Colors.white,
                   leading: const Icon(Icons.contact_page, color: Colors.white),
                   title: const Text(
-                    'CONTACT',
+                    'CONTAT',
                     style: TextStyle(
                       fontFamily: 'Rubik',
                       color: Colors.white,
